@@ -84,10 +84,36 @@ Baseline 23.986%. No velocity signal. Timestamps appear randomly generated rathe
 
 Both SQL query files are preserved in `sql/` with detailed comments - including the two date-parsing traps caught during development - for direct application to real UPI data, where velocity and device concentration are strong signals.
 
+## Preliminary Findings (Python Modeling)
+
+Three models, all null. The dataset has no learnable signal in the 43 engineered features.
+
+**Setup.** Numeric: Transaction_Frequency, Transaction_Amount_Deviation, Days_Since_Last_Transaction, amount_log, hour, day_of_week, is_weekend. Categorical (one-hot): Transaction_Type, Payment_Gateway, Merchant_Category, Transaction_Channel, Device_OS, Transaction_Status. 43 features total. Stratified 80/20 split. class_weight='balanced'.
+
+**Logistic regression (linear).** Confusion @ 0.5: TN=7,272, FP=7,931, FN=2,312, TP=2,485. Precision 0.2386, recall 0.5180, F1 0.3267. Accuracy 0.4879 — worse than all-zero baseline (0.7601). Precision equals base rate (0.2399) at every threshold.
+
+| Threshold | Flagged | Precision | Recall | F1 |
+|---|---|---|---|---|
+| 0.3 | 20,000 (all) | 0.2399 | 1.000 | 0.3869 |
+| 0.5 | 10,416 | 0.2386 | 0.518 | 0.3267 |
+| 0.7 | 0 | 0.0000 | 0.000 | 0.0000 |
+
+The 0.3 row — flagging every row — produces precision exactly equal to the base rate. The model's ranking ability is nil.
+
+**Group split.** By Customer_ID: 517 train customers, 130 test, overlap 0. Precision 0.2433, recall 0.5919, F1 0.3449. Same null. Not caused by customer memorisation.
+
+**Random forest (nonlinear).** Confusion @ 0.5: TN=8,579, FP=6,624, FN=2,714, TP=2,083. Precision 0.2392, recall 0.4342, F1 0.3085. Same null at the nonlinear model class.
+
+**Feature importance — the false lead.** Top 5 (amount_log 0.19, Transaction_Amount_Deviation 0.19, hour 0.13, day_of_week 0.07, Days_Since_Last_Transaction 0.06) carry 0.64 of total importance, 5.5x uniform baseline. Not signal: amount_log + Transaction_Amount_Deviation are correlated (same underlying quantity, split noise); hour is uniform (4,046-4,351 per hour) but offers 23 split points. The definitive test is precision vs. base rate: 0.2392 vs. 0.2399 — indistinguishable.
+
+**Why this matters.** Three independent signals — velocity (time), device concentration (network), behavioral columns (features) — all null. The synthetic generator drew each row independently. No feature predicts the label. The 24% fraud rate is a label rate, not a learnable target.
+
+**The workflow is correct.** On real UPI data, the same pipeline — velocity query, device concentration, logistic regression, random forest, threshold table, precision-recall — surfaces the signals production fraud systems rely on. Queries, models, and memos preserved here as templates.
+
 ## Status
 
 - [x] Data inspection (Nov 3)
-- [x] SQL layer - import verification, velocity, device concentration (Nov 5)
-- [ ] Python modeling (Day 3 - next)
-- [ ] Power BI dashboard
-- [ ] One-page insight memo
+- [x] SQL layer - velocity null, device concentration null (Nov 5)
+- [x] Python modeling - logistic + random forest, precision = base rate (Day 3)
+- [ ] Power BI dashboard (Day 4)
+- [ ] One-page insight memo (Day 5-6)
