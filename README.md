@@ -1,10 +1,10 @@
-# BFSI UPI Fraud Risk Profiling
+# UPI Fraud Risk Analysis
 
 **Business question:** Which transaction patterns in a UPI payment flow are most predictive of fraud, and what is the precision-recall trade-off at different risk thresholds?
 
-**Decision owner:** A fraud risk team lead at a fintech or payment service provider.
+**Decision maker:** A fraud risk team lead at a fintech or payment service provider.
 
-## TL;DR
+## ABOUT
 
 An end-to-end fraud risk analytics project on 100,000 synthetic UPI transactions. The SQL layer tested two of the strongest production fraud signals - transaction velocity and device concentration - and found both structurally absent from this dataset. The remaining behavioral columns are tested in the Python modeling layer. All findings reported honestly, including null results.
 
@@ -28,32 +28,36 @@ An end-to-end fraud risk analytics project on 100,000 synthetic UPI transactions
 | Collect | kagglehub, pandas | Done |
 | Inspect | pandas (`df.shape`, `.dtypes`, `.isnull().sum()`, `.value_counts()`) | Done |
 | SQL layer | SQLite (DB Browser) - window functions, GROUP BY, HAVING | Done |
-| Python modeling | pandas, scikit-learn - logistic regression, random forest, precision-recall | Next (Day 3) |
-| Dashboard | Power BI Desktop | Pending |
+| Python modeling | pandas, scikit-learn - logistic regression, random forest, precision-recall | Done |
+| Dashboard | Power BI Desktop - published report | Done |
 | Memo | One-page insight memo (PDF) | Pending |
 
 ## Repository Map
-
-```
 upi-fraud-risk-project/
-|-- README.md                       # This file
-|-- .gitignore                      # Excludes *.csv, *.db, *.db-journal, checkpoints
+|-- README.md # This file
+|-- .gitignore # Excludes *.csv, *.db, *.pbix, checkpoints
 |-- data/
-|   |-- README.md                   # Source + synthetic caveat
-|   |-- UPI_FRAUD_100K.csv          # 25.37 MB (not committed - see .gitignore)
-|   +-- fraud.db                    # 25 MB SQLite (not committed - rebuild from CSV)
+| |-- README.md # Source + synthetic caveat
+| |-- UPI_FRAUD_100K.csv # 25.37 MB (not committed)
+| +-- fraud.db # 25 MB SQLite (not committed)
 |-- notebooks/
-|   +-- 01_data_inspection.ipynb    # Data inspection: shape, columns, dtypes, fraud distribution
+| |-- 01_data_inspection.ipynb # Data inspection
+| +-- 02_modeling.ipynb # Feature engineering & ML models
 |-- sql/
-|   |-- 01_velocity.sql             # Velocity analysis (3 steps + comments)
-|   +-- 02_device_concentration.sql # Device concentration analysis (3 steps + comments)
+| |-- 01_velocity.sql # Velocity analysis
+| +-- 02_device_concentration.sql # Device concentration analysis
 |-- outputs/
-|   |-- 01_data_inspection.png      # Data inspection screenshot
-|   |-- 02_velocity_query.png       # Velocity analysis screenshot
-|   +-- 03_device_concentration.png # Device concentration screenshot
-|-- dashboard/                      # (pending)
-+-- memo/                           # (pending)
-```
+| |-- 01_data_inspection.png
+| |-- 02_velocity_query.png
+| |-- 03_device_concentration.png
+| |-- 04_lr_threshold_table.png
+| |-- 05_feature_importance.png
+| |-- 06_dashboard_screenshot.png
+| |-- feature_importance.csv
+| +-- threshold_table.csv
+|-- dashboard/ # Power BI source file (not committed)
++-- memo/ # One-page insight memo (pending)
+
 
 ## Preliminary Findings (SQL Layer)
 
@@ -82,8 +86,6 @@ Baseline 23.986%. No velocity signal. Timestamps appear randomly generated rathe
 
 **Why this matters.** The two strongest signals of production fraud detection - velocity (behavioral timing) and device concentration (network structure) - are both structurally absent from this synthetic dataset. The fraud signal, if any exists, must be in the behavioral columns (`Transaction_Frequency`, `Transaction_Amount_Deviation`, `Days_Since_Last_Transaction`, `amount`, plus encoded categoricals). Day 3's Python model tests this.
 
-Both SQL query files are preserved in `sql/` with detailed comments - including the two date-parsing traps caught during development - for direct application to real UPI data, where velocity and device concentration are strong signals.
-
 ## Preliminary Findings (Python Modeling)
 
 Three models, all null. The dataset has no learnable signal in the 43 engineered features.
@@ -108,12 +110,23 @@ The 0.3 row — flagging every row — produces precision exactly equal to the b
 
 **Why this matters.** Three independent signals — velocity (time), device concentration (network), behavioral columns (features) — all null. The synthetic generator drew each row independently. No feature predicts the label. The 24% fraud rate is a label rate, not a learnable target.
 
-**The workflow is correct.** On real UPI data, the same pipeline — velocity query, device concentration, logistic regression, random forest, threshold table, precision-recall — surfaces the signals production fraud systems rely on. Queries, models, and memos preserved here as templates.
+## Dashboard
+
+**Screenshot:** [`outputs/06_dashboard_screenshot.png`](outputs/06_dashboard_screenshot.png)
+
+The dashboard visualises the three null results so a reader can verify the finding in ten seconds:
+
+- **Precision vs. Recall across thresholds** — precision stays flat at the base rate (0.2399) while recall falls from 1.0 to 0. Visual proof of no ranking ability.
+- **Feature importance vs. uniform baseline** — the top-5 features tower above 1/43, but the subtitle explains why concentration is a Gini artifact, not signal: precision equals base rate (0.2392 vs 0.2399).
+- **Fraud rate by hour of day** — 24 bars all at roughly 0.24, no cycle. Uniform distribution visualised.
+- **Data quality diagnostic** — 100,000 transactions, 0 missing values, 647 customers, 647 devices (1:1 mapping), 99,998 unique IPs.
+
+The dashboard is a template. On genuine UPI data, the precision-recall chart would show precision climbing steeply with threshold, the feature-importance chart would name real signal-carrying columns, and the hour-of-day chart would show fraud concentrating in low-traffic hours.
 
 ## Status
 
 - [x] Data inspection (Nov 3)
 - [x] SQL layer - velocity null, device concentration null (Nov 5)
 - [x] Python modeling - logistic + random forest, precision = base rate (Day 3)
-- [ ] Power BI dashboard (Day 4)
+- [x] Power BI dashboard - built, null results visualised (Day 4)
 - [ ] One-page insight memo (Day 5-6)
