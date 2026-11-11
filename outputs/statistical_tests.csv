@@ -1,0 +1,9 @@
+Variable,Test,P_Value,Effect_Size,Interpretation
+amount,Mann-Whitney U,8.7962e-02,0.0073,Negligible
+Transaction_Frequency,Mann-Whitney U,6.6791e-01,0.0018,Negligible
+Days_Since_Last_Transaction,Mann-Whitney U,9.7768e-01,0.0001,Negligible
+Transaction_Type,Chi-Square,1.5349e-02,0.0099,Negligible
+Payment_Gateway,Chi-Square,5.2908e-01,0.0,Negligible
+Merchant_Category,Chi-Square,3.2324e-01,0.0037,Negligible
+Transaction_Channel,Chi-Square,5.7179e-01,0.0,Negligible
+Device_OS,Chi-Square,9.8428e-01,0.0,Negligible

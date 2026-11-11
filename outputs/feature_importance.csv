@@ -1,0 +1,41 @@
+feature,importance
+amount_log,0.1983576187873876
+Transaction_Amount_Deviation,0.1948833918671756
+hour,0.12918618970612375
+day_of_week,0.07382468399500351
+Days_Since_Last_Transaction,0.06538634886011943
+Transaction_Frequency,0.04503789428890617
+is_weekend,0.01487108153614893
+Transaction_Channel_In-store,0.012727089765357621
+Transaction_Channel_Online,0.012472276286549535
+Transaction_Channel_Mobile,0.012467273309449833
+Device_OS_Windows,0.011734161718847736
+Device_OS_Android,0.011708164902284981
+Device_OS_MacOS,0.011039419099197922
+Transaction_Type_Refund,0.01028659877733098
+Device_OS_iOS,0.010167139799488238
+Payment_Gateway_Bank of Data,0.008854549675599566
+Transaction_Type_Bank Transfer,0.008639211504391595
+Payment_Gateway_CReditPAY,0.008401376843414935
+Merchant_Category_Brand Vouchers and OTT,0.008285149770700077
+Merchant_Category_Travel bookings,0.008132082771781355
+Payment_Gateway_UPI Pay,0.008031984603899783
+Merchant_Category_Financial services and Taxes,0.00802364102523733
+Transaction_Type_Purchase,0.007894238831337769
+Payment_Gateway_Gamma Bank,0.007815339393239421
+Payment_Gateway_Sigma Bank,0.0076919763085106715
+Transaction_Type_Investment,0.007689550933260705
+Payment_Gateway_Alpha Bank,0.007675463163318726
+Transaction_Type_Subscription,0.007443946780917259
+Merchant_Category_Investment,0.007417671872008735
+Transaction_Type_Bill Payment,0.007411798398170589
+Payment_Gateway_Dummy Bank,0.007328225537819947
+Merchant_Category_Home delivery,0.007314664662458775
+Transaction_Type_Other,0.007026389770403749
+Payment_Gateway_SamplePay,0.006796846579658075
+Merchant_Category_Other,0.006753065542744275
+Payment_Gateway_Other,0.006437402038511719
+Merchant_Category_Utilities,0.00630856416960049
+Merchant_Category_Donations and Devotion,0.00620145053074547
+Merchant_Category_More Services,0.006191412456125244
+Merchant_Category_Purchases,0.006084664136771794
