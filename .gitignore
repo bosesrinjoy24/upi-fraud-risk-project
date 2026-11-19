@@ -1,0 +1,14 @@
+data/*.csv
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.DS_Store
+data/*.db
+*.db-journal
+*.pbix
+
+# Local recovery backups (never commit)
+project_backups/
+
+# Local Claude Code configuration (never commit)
+.claude/

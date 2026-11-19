@@ -1,0 +1,7 @@
+Metric,Value
+Total Transactions,100000.0
+Fraud Count,23986.0
+Genuine Count,76014.0
+Fraud Rate,0.2399
+Mean Amount (Fraud),126.37
+Mean Amount (Genuine),126.99
